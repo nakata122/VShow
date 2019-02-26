@@ -9,7 +9,8 @@ let userSchema = new mongoose.Schema({
     salt: String,
     roles: { type: Array, default: [] },
     money: { type: Number, default: 10 },
-    expositions: {type: Array, default: []}
+    expositions: {type: Array, default: []},
+    images: {type: Array, default: []}
 });
 
 userSchema.method({

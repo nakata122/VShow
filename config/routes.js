@@ -1,14 +1,26 @@
 //const leaderboardController = require('../controllers/leaderboardController');
 const newsController = require('../controllers/newsController');
 // const inventoryController = require('../controllers/inventoryController');
-// const itemController = require('../controllers/itemController');
+const imageController = require('../controllers/imageController');
+const expositionController = require('../controllers/expositionController');
 // const auctionController = require('../controllers/auctionController');
 const authController = require('../controllers/authController');
 const path = require('path');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 
 module.exports = app => {
-     app.use('/', authController);
+    app.use('/', authController);
+    app.post('/api/images', upload.single('images'), imageController.post);
+    app.put('/api/images', imageController.put);
+    app.get('/api/images', imageController.getAll);
+    app.get('/api/images/details/:id', imageController.getDetail);
+    app.post('/api/expositions', expositionController.post);
+    app.get('/api/expositions', expositionController.getAll);
+    app.get('/api/expositions/details/:id', expositionController.getDetail);
+    app.post('/api/expositions/edit/:id', expositionController.postSave);
     // app.get('/inventory', inventoryController.get);
     //app.get('/topTen', leaderboardController.get);
     app.get('/news', newsController.get);
