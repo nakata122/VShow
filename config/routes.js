@@ -15,12 +15,16 @@ module.exports = app => {
     app.use('/', authController);
     app.post('/api/images', upload.single('images'), imageController.post);
     app.put('/api/images', imageController.put);
-    app.get('/api/images', imageController.getAll);
+    app.get('/api/images/user', imageController.getUser);
     app.get('/api/images/details/:id', imageController.getDetail);
     app.post('/api/expositions', expositionController.post);
-    app.get('/api/expositions', expositionController.getAll);
+    app.get('/api/expositions/top', expositionController.getTop);
+    app.post('/api/expositions/top', expositionController.postTop);
+    app.get('/api/expositions/user', expositionController.getUser);
     app.get('/api/expositions/details/:id', expositionController.getDetail);
+    app.get('/api/expositions/search/:name', expositionController.getSearch);
     app.post('/api/expositions/edit/:id', expositionController.postSave);
+    app.get('/api/expositions/:max', expositionController.getAll);
     // app.get('/inventory', inventoryController.get);
     //app.get('/topTen', leaderboardController.get);
     app.get('/news', newsController.get);

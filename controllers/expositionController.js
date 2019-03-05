@@ -1,5 +1,6 @@
 const Users = require('../models/UserSchema');
 const Expositions = require('../models/ExpositionSchema');
+const Top = require('../models/TopSchema');
 const cloudinary = require('cloudinary');
 
 module.exports = {
@@ -31,7 +32,7 @@ module.exports = {
             }
         else res.status(401).send('Not authorized');
     },
-    getAll(req,res) {
+    getUser(req,res) {
         if(req.user){
             
             let expos = req.user.expositions;
@@ -45,10 +46,40 @@ module.exports = {
         }
         else res.status(401).send('Not authorized');
     },
+    getAll(req,res) {
+        let result = [];
+        Expositions.find({}).limit(Number(req.params.max)).exec((err, expo) => {
+            console.log(err);
+            for(let i=0;i<expo.length;i++){
+                result.push({id: expo[i].id, mainImage: expo[i].mainImage, title: expo[i].title});
+            }
+            res.json({expositions: result});
+        });
+    },
+    getTop(req,res) {
+        Top.find({}).limit(10).then(ids => {
+            res.json({ids});
+        });
+    },
+    postTop(req,res) {
+        console.log(req.body.id);
+        Top.create({id: req.body.id}).then(() => {
+            res.json({type: "info", message: "Added to top successfully"});
+        });
+    },
     getDetail(req,res) {
         Expositions.findById(req.params.id).then(data => {
             res.json({data});
         });
+    },
+    getSearch(req,res) {
+        console.log(req.params.name);
+        Expositions.find(
+            { "title": { "$regex": req.params.name, "$options": "i" } },
+            function(err,data) { 
+                res.json({data});
+            } 
+        )
     },
     postSave(req,res) {
         if(req.user && req.params.id){

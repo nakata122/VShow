@@ -34,7 +34,7 @@ module.exports = {
         }
         else res.status(401).send('Not authorized');
     },
-    getAll(req,res) {
+    getUser(req,res) {
         if(req.user){
             
             let images = req.user.images;
@@ -48,6 +48,16 @@ module.exports = {
             });
         }
         else res.status(401).send('Not authorized');
+    },
+    getAll(req,res) {
+        let result = [], ids = [];
+        Images.find({}).then(img => {
+            for(let i=0;i<img.length;i++){
+                result.push({src: img[i].id, title: img[i].title});
+                ids.push(img[i]._id);
+            }
+            res.json({images: result, ids});
+        });
     },
     getDetail(req,res) {
         if(req.user){
