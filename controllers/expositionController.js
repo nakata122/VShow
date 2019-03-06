@@ -6,7 +6,6 @@ const cloudinary = require('cloudinary');
 module.exports = {
     post(req, res) {
         if(req.user){
-            console.log(req.body);
                 //Upload exposition and data to mongodb
                 Expositions.create({
                     title: req.body.title,
@@ -17,7 +16,6 @@ module.exports = {
                     mainImage: req.body.mainImage,
                     room: req.body.room
                 }).then(expo => {
-                    console.log(expo);
                     //Add exposition to the user list
                     Users.findById(req.user._id).then(user => {
                         user.expositions.push(expo._id);
@@ -32,6 +30,33 @@ module.exports = {
             }
         else res.status(401).send('Not authorized');
     },
+    getDelete(req, res) {
+        if(req.user){
+
+            let expos = req.user.expositions.map(String);
+            if(expos.includes(req.params.id) || req.user.roles === 'admin'){
+                Expositions.deleteOne({_id: req.params.id}).then(() => {
+                    res.json({type: 'info', message: 'Deleted successfully!'});
+                }).catch(err => {
+                    res.json({type: 'error', message: 'Not found'});
+                });
+            }
+        } 
+    },
+    getImageDelete(req, res) {
+        if(req.user){
+            let expos = req.user.expositions.map(String);
+            if(expos.includes(req.params.expoId)){
+                Expositions.findById(req.params.expoId, (err, expo) => {
+                    expo.images.splice(req.params.imgId, 1);
+                    expo.save();
+                    res.json({type: 'info', message: 'Successfully updated.'});
+                }).catch(err => {
+                    res.json({type: 'error', message: 'Not found'});
+                });
+            }
+        } 
+    },
     getUser(req,res) {
         if(req.user){
             
@@ -42,6 +67,8 @@ module.exports = {
                     result.push({id: expo[i].id, mainImage: expo[i].mainImage});
                 }
                 res.json({expositions: result});
+            }).catch(err => {
+                res.json({type: 'error', message: 'Not found'});
             });
         }
         else res.status(401).send('Not authorized');
@@ -49,42 +76,61 @@ module.exports = {
     getAll(req,res) {
         let result = [];
         Expositions.find({}).limit(Number(req.params.max)).exec((err, expo) => {
-            console.log(err);
             for(let i=0;i<expo.length;i++){
                 result.push({id: expo[i].id, mainImage: expo[i].mainImage, title: expo[i].title});
             }
             res.json({expositions: result});
+        }).catch(err => {
+            res.json({type: 'error', message: 'Not found'});
         });
     },
     getTop(req,res) {
-        Top.find({}).limit(10).then(ids => {
-            res.json({ids});
+        Top.find({}).limit(10).then(tops => {
+            let result = [];
+
+            let ids = [];
+            tops.forEach(top => {ids.push(top.id)});
+
+            Expositions.find({_id: ids}).limit(10).then(expo => {
+                for(let i=0;i<expo.length;i++){
+                    result.push({id: expo[i].id, mainImage: expo[i].mainImage});
+                }
+                res.json({expositions: result});
+            }).catch(err => {
+                res.json({type: 'error', message: 'Not found'});
+            });
+        }).catch(err => {
+            res.json({type: 'error', message: 'Not found'});
         });
     },
     postTop(req,res) {
-        console.log(req.body.id);
         Top.create({id: req.body.id}).then(() => {
             res.json({type: "info", message: "Added to top successfully"});
+        }).catch(err => {
+            res.json({type: 'error', message: 'Not found'});
         });
     },
     getDetail(req,res) {
         Expositions.findById(req.params.id).then(data => {
             res.json({data});
+        }).catch(err => {
+            res.json({type: 'error', message: 'Not found'});
         });
     },
     getSearch(req,res) {
-        console.log(req.params.name);
         Expositions.find(
             { "title": { "$regex": req.params.name, "$options": "i" } },
             function(err,data) { 
                 res.json({data});
             } 
-        )
+        ).catch(err => {
+            res.json({type: 'error', message: 'Not found'});
+        });
     },
     postSave(req,res) {
         if(req.user && req.params.id){
             Expositions.findById(req.params.id).then(expo => {
-                if(req.body.imgSrc !== null && req.body.frameId <= expo.images.length)
+                if(req.body.imgSrc !== null)
                     expo.images[req.body.frameId] = {src: req.body.imgSrc, imgId: req.body.imgId, matrix: req.body.matrix};
                 else{
                     let url = expo.images[req.body.frameId].src;
@@ -94,6 +140,8 @@ module.exports = {
                 expo.markModified('images');
                 expo.save();
                 res.json({type: 'info', message: 'Successfully updated.'});
+            }).catch(err => {
+                res.json({type: 'error', message: 'Not found'});
             });
         }
     }

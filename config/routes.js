@@ -14,10 +14,13 @@ const upload = multer({ storage });
 module.exports = app => {
     app.use('/', authController);
     app.post('/api/images', upload.single('images'), imageController.post);
+    app.delete('/api/images/:id', imageController.getDelete);
     app.put('/api/images', imageController.put);
     app.get('/api/images/user', imageController.getUser);
     app.get('/api/images/details/:id', imageController.getDetail);
     app.post('/api/expositions', expositionController.post);
+    app.delete('/api/expositions/image/:expoId/:imgId', expositionController.getImageDelete);
+    app.delete('/api/expositions/:id', expositionController.getDelete);
     app.get('/api/expositions/top', expositionController.getTop);
     app.post('/api/expositions/top', expositionController.postTop);
     app.get('/api/expositions/user', expositionController.getUser);

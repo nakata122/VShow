@@ -45,6 +45,8 @@ module.exports = {
                     ids.push(img[i]._id);
                 }
                 res.json({images: result, ids});
+            }).catch(err => {
+                res.json({type: 'error', message: 'Not found'});
             });
         }
         else res.status(401).send('Not authorized');
@@ -57,12 +59,30 @@ module.exports = {
                 ids.push(img[i]._id);
             }
             res.json({images: result, ids});
+        }).catch(err => {
+            res.json({type: 'error', message: 'Not found'});
         });
+    },
+    getDelete(req,res) {
+        if(req.user){
+            let images = req.user.images.map(String);
+
+            if(images.includes(req.params.id) || req.user.roles === 'admin'){
+                Images.deleteOne({_id: req.params.id}).then(() => {
+                    res.json({type: 'info', message: 'Deleted successfully!'});
+                }).catch(err => {
+                    res.json({type: 'error', message: 'Not found'});
+                });
+            }
+        } 
+        else res.status(401).send('Not authorized');
     },
     getDetail(req,res) {
         if(req.user){
             Images.findById(req.params.id).then(data => {
                 res.json({data});
+            }).catch(err => {
+                res.json({type: 'error', message: 'Not found'});
             });
         }
         else res.status(401).send('Not authorized');
@@ -79,6 +99,8 @@ module.exports = {
                 img.description = req.body.description;
                 img.save();
                 res.json({type: 'info', message: 'Successfully updated.'});
+            }).catch(err => {
+                res.json({type: 'error', message: 'Not found'});
             });
         }
         else res.status(401).send('Not authorized');

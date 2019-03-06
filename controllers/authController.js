@@ -38,7 +38,7 @@ const getRoles = (req, res) => {
     if(!req.user)
         res.status(401).send('Not authorized');
     else
-        res.json({roles: req.user.roles, money: req.user.money});
+        res.json({roles: req.user.roles, money: req.user.money, expositions: req.user.expositions, images: req.user.images});
 };
 const getUserLogout = (req, res) => {
     req.logout();
@@ -46,7 +46,7 @@ const getUserLogout = (req, res) => {
 };
 const getUser = (req, res) => {
     if(req.user)
-        res.json({username: req.user.username, roles: req.user.roles, money: req.user.money, level: req.user.level});
+        res.json({username: req.user.username, roles: req.user.roles, expositions: req.user.expositions, images: req.user.images});
     else
         res.json({});
 };
