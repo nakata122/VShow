@@ -34,7 +34,7 @@ module.exports = {
         if(req.user){
 
             let expos = req.user.expositions.map(String);
-            if(expos.includes(req.params.id) || req.user.roles === 'admin'){
+            if(expos.includes(req.params.id) || req.user.roles[0] === 'admin'){
                 Expositions.deleteOne({_id: req.params.id}).then(() => {
                     res.json({type: 'info', message: 'Deleted successfully!'});
                 }).catch(err => {
@@ -80,9 +80,7 @@ module.exports = {
                 result.push({id: expo[i].id, mainImage: expo[i].mainImage, title: expo[i].title});
             }
             res.json({expositions: result});
-        }).catch(err => {
-            res.json({type: 'error', message: 'Not found'});
-        });
+        })
     },
     getTop(req,res) {
         Top.find({}).limit(10).then(tops => {
