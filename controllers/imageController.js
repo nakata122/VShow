@@ -4,7 +4,7 @@ const cloudinary = require('cloudinary');
 
 module.exports = {
     post(req, res) {
-        if(req.user){
+        if(req.user && req.user.images.length < 10){
 
             //Upload image to cludinary
             cloudinary.v2.uploader.upload_stream({resource_type: 'image', folder: 'vshow', use_filename: false}, function(error, result) {
@@ -17,7 +17,6 @@ module.exports = {
                         author: req.user._id,
                         id: result.public_id + '.' + result.format
                     }).then(img => {
-                        console.log(img);
                         //Add image to the user list
                         Users.findById(req.user._id).then(user => {
                             user.images.push(img._id);
@@ -26,8 +25,7 @@ module.exports = {
                         });
 
                     }).catch((error) => {
-                        console.log(error);
-                        res.json({type: 'error', message: 'Could not upload image.'});
+                        res.json({type: 'error', message: 'Грешка. Изображението не е качено.'});
                     });
                 })
                 .end(req.file.buffer)
@@ -41,12 +39,12 @@ module.exports = {
             let result = [], ids = [];
             Images.find({_id: images}).then(img => {
                 for(let i=0;i<img.length;i++){
-                    result.push({src: img[i].id, title: img[i].title});
+                    result.push({src: img[i].id, title: img[i].title, id: img[i]._id});
                     ids.push(img[i]._id);
                 }
                 res.json({images: result, ids});
             }).catch(err => {
-                res.json({type: 'error', message: 'Not found'});
+                res.json({type: 'error', message: 'Изображението не съществува'});
             });
         }
         else res.status(401).send('Not authorized');
@@ -60,7 +58,7 @@ module.exports = {
             }
             res.json({images: result, ids});
         }).catch(err => {
-            res.json({type: 'error', message: 'Not found'});
+            res.json({type: 'error', message: 'Изображението не съществува'});
         });
     },
     getDelete(req,res) {
@@ -69,9 +67,9 @@ module.exports = {
 
             if(images.includes(req.params.id) || req.user.roles === 'admin'){
                 Images.deleteOne({_id: req.params.id}).then(() => {
-                    res.json({type: 'info', message: 'Deleted successfully!'});
+                    res.json({type: 'info', message: 'Успешно изтрито!'});
                 }).catch(err => {
-                    res.json({type: 'error', message: 'Not found'});
+                    res.json({type: 'error', message: 'Изображението не съществува'});
                 });
             }
         } 
@@ -82,7 +80,7 @@ module.exports = {
             Images.findById(req.params.id).then(data => {
                 res.json({data});
             }).catch(err => {
-                res.json({type: 'error', message: 'Not found'});
+                res.json({type: 'error', message: 'Изображението не съществува'});
             });
         }
         else res.status(401).send('Not authorized');
@@ -98,9 +96,9 @@ module.exports = {
                 img.status = req.body.status;
                 img.description = req.body.description;
                 img.save();
-                res.json({type: 'info', message: 'Successfully updated.'});
+                res.json({type: 'info', message: 'Успешно редактирано.'});
             }).catch(err => {
-                res.json({type: 'error', message: 'Not found'});
+                res.json({type: 'error', message: 'Изображението не съществува'});
             });
         }
         else res.status(401).send('Not authorized');

@@ -7,10 +7,10 @@ const User = require('../models/UserSchema');
 const postUserRegister = (req, res) => {
     let reqUser = req.body;
     // Add validations!
-    if(reqUser.password.length < 3 || reqUser.password.length > 10)
-        res.json({type:'error', message: 'Password must between 3 and 10 symbols'});
+    if(reqUser.password.length < 3)
+        res.json({type:'error', message: 'Паролата трябва да е над 3 символа'});
     if(reqUser.username.length > 15)
-        res.json({type:'error', message: "Username can't be over 15 symbols"});
+        res.json({type:'error', message: "Потребителското име не може да е над 15 символа"});
     else {
         let salt = encryption.generateSalt();
         let hashedPassword = encryption.generateHashedPassword(salt, reqUser.password);
@@ -22,17 +22,17 @@ const postUserRegister = (req, res) => {
         }).then(user => {
             console.log('registered');
             req.logIn(user, (err, user) => {
-                res.json({type:'info', message: 'User registered.', username: req.user.username});
+                res.json({type:'info', message: 'Успешна регистация.', username: req.user.username});
             })
         }).catch(err => {
             console.log('Error');
-            res.json({type:'error', message: 'Username is already taken.'});
+            res.json({type:'error', message: 'Потребителското име е заето.'});
         })
     }
 };
 
 const postUserLogin = (req, res) => {
-    res.json({type:'info', message: 'User logged in.', username: req.user.username});
+    res.json({type:'info', message: 'Успешно влизане.', username: req.user.username});
 };
 const getRoles = (req, res) => {
     if(!req.user)
@@ -42,7 +42,7 @@ const getRoles = (req, res) => {
 };
 const getUserLogout = (req, res) => {
     req.logout();
-    res.json({type: 'info', message: 'User logged out'});
+    res.json({type: 'info', message: 'Успешно излизане.'});
 };
 const getUser = (req, res) => {
     if(req.user)

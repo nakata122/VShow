@@ -25,7 +25,7 @@ module.exports = {
 
                 }).catch((error) => {
                     console.log(error);
-                    res.json({type: 'error', message: 'Could not create exposition.'});
+                    res.json({type: 'error', message: 'Грешка. Експозицията не е създадена'});
                 });
             }
         else res.status(401).send('Not authorized');
@@ -36,9 +36,9 @@ module.exports = {
             let expos = req.user.expositions.map(String);
             if(expos.includes(req.params.id) || req.user.roles[0] === 'admin'){
                 Expositions.deleteOne({_id: req.params.id}).then(() => {
-                    res.json({type: 'info', message: 'Deleted successfully!'});
+                    res.json({type: 'info', message: 'Успешно изтрита!'});
                 }).catch(err => {
-                    res.json({type: 'error', message: 'Not found'});
+                    res.json({type: 'error', message: 'Експозицията не съществува!'});
                 });
             }
         } 
@@ -50,7 +50,7 @@ module.exports = {
                 Expositions.findById(req.params.expoId, (err, expo) => {
                     expo.images.splice(req.params.imgId, 1);
                     expo.save();
-                    res.json({type: 'info', message: 'Successfully updated.'});
+                    res.json({type: 'info', message: 'Успешно изтрита.'});
                 }).catch(err => {
                     res.json({type: 'error', message: 'Not found'});
                 });
@@ -68,7 +68,7 @@ module.exports = {
                 }
                 res.json({expositions: result});
             }).catch(err => {
-                res.json({type: 'error', message: 'Not found'});
+                res.json({type: 'error', message: 'Експозицията не е намерена!'});
             });
         }
         else res.status(401).send('Not authorized');
@@ -95,24 +95,24 @@ module.exports = {
                 }
                 res.json({expositions: result});
             }).catch(err => {
-                res.json({type: 'error', message: 'Not found'});
+                res.json({type: 'error', message: 'Експозицията не е намерена!'});
             });
         }).catch(err => {
-            res.json({type: 'error', message: 'Not found'});
+            res.json({type: 'error', message: 'Експозицията не е намерена!'});
         });
     },
     postTop(req,res) {
         Top.create({id: req.body.id}).then(() => {
-            res.json({type: "info", message: "Added to top successfully"});
+            res.json({type: "info", message: "Успешно добавена към първата страница"});
         }).catch(err => {
-            res.json({type: 'error', message: 'Not found'});
+            res.json({type: 'error', message: 'Експозицията не е намерена!'});
         });
     },
     getDetail(req,res) {
         Expositions.findById(req.params.id).then(data => {
             res.json({data});
         }).catch(err => {
-            res.json({type: 'error', message: 'Not found'});
+            res.json({type: 'error', message: 'Експозицията не е намерена!'});
         });
     },
     getSearch(req,res) {
@@ -122,7 +122,7 @@ module.exports = {
                 res.json({data});
             } 
         ).catch(err => {
-            res.json({type: 'error', message: 'Not found'});
+            res.json({type: 'error', message: 'Експозицията не е намерена!'});
         });
     },
     postSave(req,res) {
@@ -137,9 +137,8 @@ module.exports = {
                 }
                 expo.markModified('images');
                 expo.save();
-                res.json({type: 'info', message: 'Successfully updated.'});
             }).catch(err => {
-                res.json({type: 'error', message: 'Not found'});
+                res.json({type: 'error', message: 'Запазването не се осъществи!'});
             });
         }
     }
