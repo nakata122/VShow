@@ -48,7 +48,9 @@ module.exports = {
             let expos = req.user.expositions.map(String);
             if(expos.includes(req.params.expoId)){
                 Expositions.findById(req.params.expoId, (err, expo) => {
-                    expo.images.splice(req.params.imgId, 1);
+                    console.log(expo.images[req.params.imgId]);
+                    expo.images[req.params.imgId] = null;
+                    expo.markModified('images');
                     expo.save();
                     res.json({type: 'info', message: 'Успешно изтрита.'});
                 }).catch(err => {
