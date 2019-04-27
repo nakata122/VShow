@@ -64,7 +64,7 @@ module.exports = {
     getDelete(req,res) {
         if(req.user){
             let images = req.user.images.map(String);
-
+            console.log(req.params);
             if(images.includes(req.params.id) || req.user.roles === 'admin'){
                 Images.deleteOne({_id: req.params.id}).then(() => {
                     res.json({type: 'info', message: 'Успешно изтрито!'});
@@ -87,16 +87,17 @@ module.exports = {
     },
     put(req,res) {
         if(req.user){
+            console.log(req.body);
             Images.findById(req.body._id, (err, img) => {
-                img.title = req.body.title;
-                img.price = req.body.price;
-                img.currency = req.body.currency;
-                img.genre = req.body.genre;
-                img.year = req.body.year;
-                img.status = req.body.status;
-                img.description = req.body.description;
-                img.save();
-                res.json({type: 'info', message: 'Успешно редактирано.'});
+                    img.title = req.body.title;
+                    img.price = req.body.price;
+                    img.currency = req.body.currency;
+                    img.genre = req.body.genre;
+                    img.year = req.body.year;
+                    img.status = req.body.status;
+                    img.description = req.body.description;
+                    img.save();
+                    res.json({type: 'info', message: 'Успешно редактирано.'});
             }).catch(err => {
                 res.json({type: 'error', message: 'Изображението не съществува'});
             });
