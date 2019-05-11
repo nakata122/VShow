@@ -76,14 +76,11 @@ module.exports = {
         else res.status(401).send('Not authorized');
     },
     getDetail(req,res) {
-        if(req.user){
             Images.findById(req.params.id).then(data => {
                 res.json({data});
             }).catch(err => {
                 res.json({type: 'error', message: 'Изображението не съществува'});
             });
-        }
-        else res.status(401).send('Not authorized');
     },
     put(req,res) {
         if(req.user){
