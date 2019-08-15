@@ -5,7 +5,7 @@ const cloudinary = require('cloudinary');
 
 module.exports = {
     post(req, res) {
-        if(req.user){
+        if(req.user && req.user.expositions.length <= 1){
                 //Upload exposition and data to mongodb
                 Expositions.create({
                     title: req.body.title,

@@ -11,6 +11,7 @@ module.exports = {
                     console.log(error);
                     console.log(result);
 
+                    if(result) {
                     //Upload image and data to mongodb
                     Images.create({
                         title: result.public_id.split('/')[1],
@@ -27,6 +28,7 @@ module.exports = {
                     }).catch((error) => {
                         res.json({type: 'error', message: 'Грешка. Изображението не е качено.'});
                     });
+                    }
                 })
                 .end(req.file.buffer)
         }

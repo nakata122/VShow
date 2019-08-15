@@ -1,15 +1,15 @@
 {
-  "main.css": "/static/css/main.c7810b32.chunk.css",
-  "main.js": "/static/js/main.d2aa0975.chunk.js",
-  "main.js.map": "/static/js/main.d2aa0975.chunk.js.map",
+  "main.css": "/static/css/main.98dc308c.chunk.css",
+  "main.js": "/static/js/main.795b5cd3.chunk.js",
+  "main.js.map": "/static/js/main.795b5cd3.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.c5541365.js",
   "runtime~main.js.map": "/static/js/runtime~main.c5541365.js.map",
-  "static/js/2.a25fd3e3.chunk.js": "/static/js/2.a25fd3e3.chunk.js",
-  "static/js/2.a25fd3e3.chunk.js.map": "/static/js/2.a25fd3e3.chunk.js.map",
+  "static/js/2.670b1eda.chunk.js": "/static/js/2.670b1eda.chunk.js",
+  "static/js/2.670b1eda.chunk.js.map": "/static/js/2.670b1eda.chunk.js.map",
   "index.html": "/index.html",
-  "precache-manifest.8ab9f01ebfdda92bbcd66e1a95129d7f.js": "/precache-manifest.8ab9f01ebfdda92bbcd66e1a95129d7f.js",
+  "precache-manifest.1a8de56db8a210dc33938fa808c8e36d.js": "/precache-manifest.1a8de56db8a210dc33938fa808c8e36d.js",
   "service-worker.js": "/service-worker.js",
-  "static/css/main.c7810b32.chunk.css.map": "/static/css/main.c7810b32.chunk.css.map",
+  "static/css/main.98dc308c.chunk.css.map": "/static/css/main.98dc308c.chunk.css.map",
   "static/media/T-Rex Model.mtl": "/static/media/T-Rex Model.0a42b0cf.mtl",
   "static/media/bird.jpg": "/static/media/bird.577d747c.jpg",
   "static/media/createButton.png": "/static/media/createButton.71984a39.png",
@@ -17,6 +17,7 @@
   "static/media/galery3.jpg": "/static/media/galery3.3f9eb3a6.jpg",
   "static/media/galery4.jpg": "/static/media/galery4.c2d07353.jpg",
   "static/media/hologramText.png": "/static/media/hologramText.d8fd22d0.png",
+  "static/media/instructions.png": "/static/media/instructions.3455c821.png",
   "static/media/logo.svg": "/static/media/logo.5d5d9eef.svg",
   "static/media/logo2.png": "/static/media/logo2.05a59b49.png",
   "static/media/museum.obj": "/static/media/museum.c1d98e45.obj",
@@ -27,5 +28,5 @@
   "static/media/room3.png": "/static/media/room3.e90e4a76.png",
   "static/media/room3.obj": "/static/media/room3.f5ceccdc.obj",
   "static/media/uploadButton.png": "/static/media/uploadButton.dc974919.png",
-  "static/media/forms.css": "/static/media/wall.4bd355df.jpg"
+  "static/media/forms.css": "/static/media/wall.adebdc4d.jpg"
 }
