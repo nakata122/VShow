@@ -5,11 +5,10 @@ const cloudinary = require('cloudinary');
 
 module.exports = {
     post(req, res) {
-        if(req.user && req.user.expositions.length <= 1){
                 //Upload exposition and data to mongodb
                 Expositions.create({
                     title: req.body.title,
-                    author: req.user._id,
+                    author: req.user ? req.user._id:'5c7d552d1cad5a2a28f02bfe',
                     from: req.body.from,
                     to: req.body.to,
                     description: req.body.description,
@@ -17,18 +16,18 @@ module.exports = {
                     room: req.body.room
                 }).then(expo => {
                     //Add exposition to the user list
-                    Users.findById(req.user._id).then(user => {
-                        user.expositions.push(expo._id);
-                        user.save();
-                        res.json({id: expo._id});
-                    });
-
+                    if(req.user) {
+                        Users.findById(req.user._id).then(user => {
+                            user.expositions.push(expo._id);
+                            user.save();
+                            res.json({id: expo._id});
+                        });
+                    }
+                    else res.json({id: expo._id});
                 }).catch((error) => {
                     console.log(error);
-                    res.json({type: 'error', message: 'Грешка. Експозицията не е създадена'});
+                    res.json({type: 'error', message: 'Error. Unable to create exposition'});
                 });
-            }
-        else res.status(401).send('Not authorized');
     },
     getDelete(req, res) {
         if(req.user){
@@ -36,28 +35,27 @@ module.exports = {
             let expos = req.user.expositions.map(String);
             if(expos.includes(req.params.id) || req.user.roles[0] === 'admin'){
                 Expositions.deleteOne({_id: req.params.id}).then(() => {
-                    res.json({type: 'info', message: 'Успешно изтрита!'});
+                    res.json({type: 'info', message: 'Successfully deleted!'});
                 }).catch(err => {
-                    res.json({type: 'error', message: 'Експозицията не съществува!'});
+                    res.json({type: 'error', message: 'The exposition does not exist!'});
                 });
             }
         } 
     },
     getImageDelete(req, res) {
-        if(req.user){
-            let expos = req.user.expositions.map(String);
-            if(expos.includes(req.params.expoId)){
-                Expositions.findById(req.params.expoId, (err, expo) => {
-                    console.log(expo.images[req.params.imgId]);
-                    expo.images[req.params.imgId] = null;
-                    expo.markModified('images');
-                    expo.save();
-                    res.json({type: 'info', message: 'Успешно изтрита.'});
-                }).catch(err => {
-                    res.json({type: 'error', message: 'Not found'});
-                });
+        Expositions.findById(req.params.expoId, (err, expo) => {
+            console.log(expo.author);
+            if(expo.author == '5c7d552d1cad5a2a28f02bfe') {
+                console.log("Deleting");
+                expo.images[req.params.imgId] = null;
+                expo.markModified('images');
+                expo.save();
+                res.json({type: 'info', message: 'Successfully deleted!'});
             }
-        } 
+                    
+        }).catch(err => {
+            res.json({type: 'error', message: 'Not found'});
+        });
     },
     getUser(req,res) {
         if(req.user){
@@ -128,7 +126,7 @@ module.exports = {
         });
     },
     postSave(req,res) {
-        if(req.user && req.params.id){
+        if(req.params.id){
             Expositions.findById(req.params.id).then(expo => {
                 if(req.body.imgSrc !== null)
                     expo.images[req.body.frameId] = {src: req.body.imgSrc, imgId: req.body.imgId, matrix: req.body.matrix};

@@ -4,7 +4,7 @@ const cloudinary = require('cloudinary');
 
 module.exports = {
     post(req, res) {
-        if(req.user && req.user.images.length < 10){
+        if(req.user){
 
             //Upload image to cludinary
             cloudinary.v2.uploader.upload_stream({resource_type: 'image', folder: 'vshow', use_filename: false}, function(error, result) {
@@ -32,7 +32,27 @@ module.exports = {
                 })
                 .end(req.file.buffer)
         }
-        else res.status(401).send('Not authorized');
+        else {
+            //Upload image to cludinary
+            cloudinary.v2.uploader.upload_stream({resource_type: 'image', folder: 'public', use_filename: false}, function(error, result) {
+                    console.log(error);
+                    console.log(result);
+
+                    if(result) {
+                    //Upload image and data to mongodb
+                    Images.create({
+                        title: result.public_id.split('/')[1],
+                        author: '5c7d552d1cad5a2a28f02bfe',
+                        id: result.public_id + '.' + result.format
+                    }).then(img => {
+                        res.json({id: result.public_id + '.' + result.format});
+                    }).catch((error) => {
+                        res.json({type: 'error', message: 'Грешка. Изображението не е качено.'});
+                    });
+                    }
+                })
+                .end(req.file.buffer)
+        }
     },
     getUser(req,res) {
         if(req.user){
