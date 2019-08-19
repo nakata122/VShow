@@ -92,7 +92,7 @@ self.__precacheManifest = [
     "url": "/static/media/T-Rex Model.0a42b0cf.mtl"
   },
   {
-    "revision": "2069625727034a6fa9162ca2a30dac7a",
+    "revision": "d215cffca9625d90bb7439e618420c33",
     "url": "/index.html"
   }
 ];
